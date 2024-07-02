@@ -10,7 +10,7 @@ PromptFlow is a powerful tool for generating and managing prompts in various con
 
 To get started with the PromptFlow Pattern Library, follow these steps:
 
-1. **Installation**: Ensure you have PromptFlow installed and configured on your system. Refer to the official PromptFlow documentation for installation instructions.
+1. **Installation**: Ensure you have PromptFlow installed and configured on your system. Refer to the official PromptFlow documentation for installation instructions. [https://microsoft.github.io/promptflow/index.html](https://microsoft.github.io/promptflow/index.html)
 
 2. **Browse Templates**: Explore the library to find templates that suit your needs. Each template comes with a detailed description and use case scenario to help you make the best choice.
 
