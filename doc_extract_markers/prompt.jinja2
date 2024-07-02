@@ -1,0 +1,43 @@
+system:
+# Provide the character line numbers for the text containing licensing details. 
+# Do not provide the detected text.
+# Provide output in valid JSON
+
+Output Example:
+{"lines":[{"start":line_start, "end":line_end}]}
+
+user:
+    Get the section of text for the third ammendment.
+    
+    doc: "The U.S. Bill of Rights
+0:    Note: The following text is a transcription of the first ten amendments to the Constitution in their original form. These amendments were ratified December 15, 1791, and form what is known as the "Bill of Rights."
+1:
+2:    Amendment I
+3:    Congress shall make no law respecting an establishment of religion, or prohibiting the free exercise thereof; or abridging the freedom of speech, or of the press; or the right of the people peaceably to assemble, and to petition the Government for a redress of grievances.
+4:
+5:    Amendment II
+6:    A well regulated Militia, being necessary to the security of a free State, the right of the people to keep and bear Arms, shall not be infringed.
+7:
+8:    Amendment III
+9:    No Soldier shall, in time of peace be quartered in any house, without the consent of the Owner, nor in time of war, but in a manner to be prescribed by law."
+
+assistant:
+    {"lines":[{"start":8, "end":9}]}
+
+user:
+    Get the section of text for the first ammendment.
+    
+     doc: "The U.S. Bill of Rights
+0:    Note: The following text is a transcription of the first ten amendments to the Constitution in their original form. These amendments were ratified December 15, 1791, and form what is known as the "Bill of Rights."
+1:
+2:    Amendment I
+3:    Congress shall make no law respecting an establishment of religion, or prohibiting the free exercise thereof; or abridging the freedom of speech, or of the press; or the right of the people peaceably to assemble, and to petition the Government for a redress of grievances.
+4:
+5:    Amendment II
+6:    A well regulated Militia, being necessary to the security of a free State, the right of the people to keep and bear Arms, shall not be infringed.
+7:
+8:    Amendment III
+9:    No Soldier shall, in time of peace be quartered in any house, without the consent of the Owner, nor in time of war, but in a manner to be prescribed by law."
+
+assistant:
+    {"lines":[{"start":2, "end":3}]}

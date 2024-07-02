@@ -1,0 +1,75 @@
+id: template_chat_flow
+name: Template Chat Flow
+environment:
+  python_requirements_txt: requirements.txt
+inputs:
+  chat_history:
+    type: list
+    is_chat_input: false
+    is_chat_history: true
+  question:
+    type: string
+    default: what is the 2nd ammendment?
+    is_chat_input: true
+outputs:
+  answer:
+    type: string
+    reference: ${chat.output}
+    is_chat_output: false
+  reference_lines:
+    type: string
+    reference: ${retrieve_lines.output}
+    is_chat_output: true
+nodes:
+- name: chat
+  type: llm
+  source:
+    type: code
+    path: chat.jinja2
+  inputs:
+    deployment_name: gpt-4o
+    temperature: 0
+    top_p: 0.95
+    max_tokens: 800
+    response_format:
+      type: json_object
+    presence_penalty: 0
+    frequency_penalty: 0
+    document: ${append_line_numbers.output}
+    question: ${inputs.question}
+    sys_prompt: ${prompt.output}
+  provider: AzureOpenAI
+  connection: Default_AzureOpenAI
+  api: chat
+  use_variants: false
+- name: prompt
+  type: prompt
+  source:
+    type: code
+    path: prompt.jinja2
+  inputs: {}
+  use_variants: false
+- name: usbillofrights
+  type: prompt
+  source:
+    type: code
+    path: usbillofrights.jinja2
+  inputs: {}
+  use_variants: false
+- name: append_line_numbers
+  type: python
+  source:
+    type: code
+    path: append_line_numbers.py
+  inputs:
+    input1: ${usbillofrights.output}
+  use_variants: false
+- name: retrieve_lines
+  type: python
+  source:
+    type: code
+    path: retrieve_lines.py
+  inputs:
+    source: ${usbillofrights.output}
+    lines: ${chat.output}
+  use_variants: false
