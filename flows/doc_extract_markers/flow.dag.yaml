@@ -9,7 +9,7 @@ inputs:
     is_chat_history: true
   question:
     type: string
-    default: what is the 2nd ammendment?
+    default: what ammendments relate to my iphone?
     is_chat_input: true
 outputs:
   answer:

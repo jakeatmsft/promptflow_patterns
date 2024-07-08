@@ -1,0 +1,77 @@
+$schema: https://azuremlschemas.azureedge.net/promptflow/latest/Flow.schema.json
+environment:
+  python_requirements_txt: requirements.txt
+inputs:
+  chat_history:
+    type: list
+    is_chat_history: true
+    default: []
+  question:
+    type: string
+    is_chat_input: true
+    default: generate the output
+  fileInput:
+    type: string
+    default: ./ms_fy23_q1_html.htm
+outputs:
+  answer:
+    type: string
+    reference: ${generate_pandas.output}
+    is_chat_output: true
+  table_txt:
+    type: string
+    reference: ${extract_table.output}
+  final_table:
+    type: string
+    reference: ${run_analysis.output}
+nodes:
+- name: extract_table
+  type: python
+  source:
+    type: code
+    path: extract_table.py
+  inputs:
+    fileinput1: ${inputs.fileInput}
+- name: generate_pandas
+  type: llm
+  source:
+    type: code
+    path: generate_pandas.jinja2
+  inputs:
+    deployment_name: gpt-4o
+    table_txt: ${extract_table.output}
+    temperature: 0
+  connection: Default_AzureOpenAI
+  api: chat
+- name: exec_code
+  type: python
+  source:
+    type: code
+    path: exec_code.py
+  inputs:
+    input_program: ${generate_pandas.output}
+- name: generate_analysis
+  type: llm
+  source:
+    type: code
+    path: generate_analysis.jinja2
+  inputs:
+    deployment_name: gpt-4o
+    temperature: 0
+    question: ${data_analysis_prompt.output}
+  connection: Default_AzureOpenAI
+  api: chat
+- name: data_analysis_prompt
+  type: prompt
+  source:
+    type: code
+    path: data_analysis_prompt.jinja2
+  inputs:
+    data_json: ${exec_code.output}
+- name: run_analysis
+  type: python
+  source:
+    type: code
+    path: run_analysis.py
+  inputs:
+    input_program: ${generate_analysis.output}
