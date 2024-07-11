@@ -1,0 +1,64 @@
+system:
+For the given question, use the provided tables, columns, foreign keys, and primary keys, only respond with Schema_links definition for the Q provided.  If you do not have enough information respond with blank schema_links list.
+
+# Use the  schema links to generate the SQL queries for each of the questions.   
+Table advisor, columns = [*,s_ID,i_ID]   
+Table classroom, columns = [*,building,room_number,capacity]   
+Table course, columns = [*,course_id,title,dept_name,credits]   
+Table department, columns = [*,dept_name,building,budget]   
+Table instructor, columns = [*,ID,name,dept_name,salary]   
+Table prereq, columns = [*,course_id,prereq_id]   
+Table section, columns = [*,course_id,sec_id,semester,year,building,room_number,time_slot_id]   
+Table student, columns = [*,ID,name,dept_name,tot_cred]   
+Table takes, columns = [*,ID,course_id,sec_id,semester,year,grade]   
+Table teaches, columns = [*,ID,course_id,sec_id,semester,year]   
+Table time_slot, columns = [*,time_slot_id,day,start_hr,start_min,end_hr,end_min]   
+Table Documents, columns = [*,Document_ID,Template_ID,Document_Name,Document_Description,Other_Details]   
+Table Paragraphs, columns = [*,Paragraph_ID,Document_ID,Paragraph_Text,Other_Details]   
+Table Ref_Template_Types, columns = [*,Template_Type_Code,Template_Type_Description]   
+Table Templates, columns = [*,Template_ID,Version_Number,Template_Type_Code,Date_Effective_From,Date_Effective_To,Template_Details]    
+Foreign_keys = [course.dept_name = department.dept_name,instructor.dept_name = department.dept_name,section.building = classroom.building,section.room_number = classroom.room_number,section.course_id = course.course_id,teaches.ID = instructor.ID,teaches.course_id = section.course_id,teaches.sec_id = section.sec_id,teaches.semester = section.semester,teaches.year = section.year,student.dept_name = department.dept_name,takes.ID = student.ID,takes.course_id = section.course_id,takes.sec_id = section.sec_id,takes.semester = section.semester,takes.year = section.year,advisor.s_ID = student.ID,advisor.i_ID = instructor.ID,prereq.prereq_id = course.course_id,prereq.course_id = course.course_id]
+
+user: 
+"Find the buildings which have rooms with capacity more than 50."   
+
+assistant:
+Schema_links: [classroom.building,classroom.capacity,50]   
+
+user: 
+Q: "Find the room number of the rooms which can sit 50 to 100 students and their buildings."
+assistant:
+Schema_links: [classroom.building,classroom.room_number,classroom.capacity,50,100]   
+
+user: 
+Q: "Give the name of the student in the History department with the most credits." 
+assistant:
+Schema_links: [student.name,student.dept_name,student.tot_cred,History]   
+
+user: 
+Q: "Find the total budgets of the Marketing or Finance department."   
+assistant:
+Schema_links: [department.budget,department.dept_name,Marketing,Finance]   
+
+user: 
+Q: "Find the department name of the instructor whose name contains 'Soisalon'."   
+assistant:
+Schema_links: [instructor.dept_name,instructor.name,Soisalon]   
+
+user: 
+Q: "What is the name of the department with the most credits?"   
+assistant:
+Schema_links: [course.dept_name,course.credits]   
+
+user: 
+ Q: "How many instructors teach a course in the Spring of 2010?"   
+assistant:
+Schema_links: [teaches.ID,teaches.semester,teaches.YEAR,Spring,2010]   
+
+user: 
+ Q: "Find the name of the students and their department names sorted by their total credits in ascending order."   
+assistant:
+Schema_links: [student.name,student.dept_name,student.tot_cred]   
+
+user:
+Q: {{question}}

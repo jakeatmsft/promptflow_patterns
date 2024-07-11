@@ -1,0 +1,72 @@
+system:
+For the given question, use the provided tables, columns, foreign keys, and primary keys to fix the given SQLite SQL QUERY for any issues. If there are any problems, fix them. If there are no issues, return the SQLite SQL QUERY as is. #### Use the following instructions for fixing the SQL QUERY: 
+1) Use the database values that are explicitly mentioned in the question. 
+2) Pay attention to the columns that are used for the JOIN by using the Foreign_keys. 
+3) Use DESC and DISTINCT when needed. 
+4) Pay attention to the columns that are used for the GROUP BY statement. 
+5) Pay attention to the columns that are used for the SELECT statement. 
+6) Only change the GROUP BY clause when necessary (Avoid redundant columns in GROUP BY). 7) Use GROUP BY on one column only.  
+Only respond with valid SQL statement. Do not provide explanation of steps.
+
+# Use the  schema links to generate the SQL queries for each of the questions.   
+Table advisor, columns = [*,s_ID,i_ID]   
+Table classroom, columns = [*,building,room_number,capacity]   
+Table course, columns = [*,course_id,title,dept_name,credits]   
+Table department, columns = [*,dept_name,building,budget]   
+Table instructor, columns = [*,ID,name,dept_name,salary]   
+Table prereq, columns = [*,course_id,prereq_id]   
+Table section, columns = [*,course_id,sec_id,semester,year,building,room_number,time_slot_id]   
+Table student, columns = [*,ID,name,dept_name,tot_cred]   
+Table takes, columns = [*,ID,course_id,sec_id,semester,year,grade]   
+Table teaches, columns = [*,ID,course_id,sec_id,semester,year]   
+Table time_slot, columns = [*,time_slot_id,day,start_hr,start_min,end_hr,end_min]   
+Table Documents, columns = [*,Document_ID,Template_ID,Document_Name,Document_Description,Other_Details]   
+Table Paragraphs, columns = [*,Paragraph_ID,Document_ID,Paragraph_Text,Other_Details]   
+Table Ref_Template_Types, columns = [*,Template_Type_Code,Template_Type_Description]   
+Table Templates, columns = [*,Template_ID,Version_Number,Template_Type_Code,Date_Effective_From,Date_Effective_To,Template_Details]    
+Foreign_keys = [course.dept_name = department.dept_name,instructor.dept_name = department.dept_name,section.building = classroom.building,section.room_number = classroom.room_number,section.course_id = course.course_id,teaches.ID = instructor.ID,teaches.course_id = section.course_id,teaches.sec_id = section.sec_id,teaches.semester = section.semester,teaches.year = section.year,student.dept_name = department.dept_name,takes.ID = student.ID,takes.course_id = section.course_id,takes.sec_id = section.sec_id,takes.semester = section.semester,takes.year = section.year,advisor.s_ID = student.ID,advisor.i_ID = instructor.ID,prereq.prereq_id = course.course_id,prereq.course_id = course.course_id]
+
+user:
+Q: "Find the buildings which have rooms with capacity more than 50."   
+Schema_links: [classroom.building,classroom.capacity,50]   
+assistant:
+SQL: SELECT DISTINCT building FROM classroom WHERE capacity  >  50    
+user:
+Q: "Find the room number of the rooms which can sit 50 to 100 students and their buildings." 
+Schema_links: [classroom.building,classroom.room_number,classroom.capacity,50,100]   
+assistant:
+SQL: SELECT building ,  room_number FROM classroom WHERE capacity BETWEEN 50 AND 100   
+user:
+Q: "Give the name of the student in the History department with the most credits." 
+Schema_links: [student.name,student.dept_name,student.tot_cred,History]   
+assistant:
+SQL: SELECT name FROM student WHERE dept_name  =  'History' ORDER BY tot_cred DESC LIMIT 1    
+user:
+Q: "Find the total budgets of the Marketing or Finance department."   
+Schema_links: [department.budget,department.dept_name,Marketing,Finance]   
+assistant:
+SQL: SELECT sum(budget) FROM department WHERE dept_name  =  'Marketing' OR dept_name  =  'Finance'    
+user:
+Q: "Find the department name of the instructor whose name contains 'Soisalon'."   
+Schema_links: [instructor.dept_name,instructor.name,Soisalon]   
+assistant:
+SQL: SELECT dept_name FROM instructor WHERE name LIKE '%Soisalon%'    
+user:
+Q: "What is the name of the department with the most credits?"   
+Schema_links: [course.dept_name,course.credits]   
+assistant:
+SQL: SELECT dept_name FROM course GROUP BY dept_name ORDER BY sum(credits) DESC LIMIT 1   
+user:
+Q: "How many instructors teach a course in the Spring of 2010?"   
+Schema_links: [teaches.ID,teaches.semester,teaches.YEAR,Spring,2010]   
+assistant:
+SQL: SELECT COUNT (DISTINCT ID) FROM teaches WHERE semester  =  'Spring' AND YEAR  =  2010   
+user:
+Q: "Find the name of the students and their department names sorted by their total credits in ascending order."   
+Schema_links: [student.name,student.dept_name,student.tot_cred]   
+assistant:
+SQL: SELECT name ,  dept_name FROM student ORDER BY tot_cred 
+
+user:
+Q: {{question}} 
+{{context_schema}}

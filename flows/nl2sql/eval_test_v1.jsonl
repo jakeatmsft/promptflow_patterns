@@ -1,0 +1,7 @@
+{"question": "Find the room number of the rooms which can sit 50 to 100 students and their buildings.", "schema": ["classroom.building", "classroom.room_number", "classroom.capacity", "50", "100"]}
+{"question": "Give the name of the student in the History department with the most credits.", "schema": ["student.name", "student.dept_name", "student.tot_cred", "History"]}
+{"question": "Find the total budgets of the Marketing or Finance department.", "schema": ["department.budget", "department.dept_name", "Marketing", "Finance"]}
+{"question": "Find the department name of the instructor whose name contains 'Soisalon'.", "schema": ["instructor.dept_name", "instructor.name", "Soisalon"]}
+{"question": "What is the name of the department with the most credits?", "schema": ["course.dept_name", "course.credits"]}
+{"question": "How many instructors teach a course in the Spring of 2010?", "schema": ["teaches.ID", "teaches.semester", "teaches.YEAR", "Spring", "2010"]}
+{"question": "Find the name of the students and their department names sorted by their total credits in ascending order.", "schema": ["student.name", "student.dept_name", "student.tot_cred"]}

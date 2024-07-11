@@ -1,0 +1,103 @@
+environment:
+  python_requirements_txt: requirements.txt
+inputs:
+  chat_history:
+    type: list
+    default:
+    - inputs:
+        question: what are the teacher salaries by department?
+      outputs:
+        fp_answer: "SQL: SELECT instructor.dept_name, AVG(instructor.salary) FROM
+          instructor GROUP BY instructor.dept_name"
+    - inputs:
+        question: what are the teacher salaries by number of courses taught?
+      outputs:
+        fp_answer: "SQL: SELECT teaches.ID, COUNT(teaches.course_id) AS num_courses,
+          instructor.salary FROM teaches JOIN instructor ON teaches.ID =
+          instructor.ID GROUP BY teaches.ID, instructor.salary ORDER BY
+          num_courses"
+        line_number: 0
+    - inputs:
+        question: what are the teacher salaries by department?
+      outputs:
+        fp_answer: "SQL: SELECT instructor.dept_name, AVG(instructor.salary) FROM
+          instructor GROUP BY instructor.dept_name"
+        line_number: 0
+    is_chat_input: false
+    is_chat_history: true
+  question:
+    type: string
+    default: Find the name of the students and their department names sorted by
+      their total credits in ascending order
+    is_chat_input: true
+outputs:
+  fp_answer:
+    type: string
+    reference: ${query_rewrite.output}
+    evaluation_only: false
+    is_chat_output: true
+  fp_output:
+    type: string
+    reference: ${full_prompt_reformat.output}
+nodes:
+- name: query_rewrite
+  type: llm
+  source:
+    type: code
+    path: query_rewrite.jinja2
+  inputs:
+    deployment_name: gpt-4o
+    temperature: 1
+    top_p: 1
+    max_tokens: 256
+    presence_penalty: 0
+    frequency_penalty: 0
+    question: ${query_gen.output}
+  connection: Default_AzureOpenAI
+  api: chat
+  aggregation: false
+  use_variants: false
+- name: full_prompt_reformat
+  type: prompt
+  source:
+    type: code
+    path: full_prompt_reformat.jinja2
+  inputs:
+    chat_output: ${query_gen.output}
+  aggregation: false
+  use_variants: false
+- name: query_gen
+  type: llm
+  source:
+    type: code
+    path: query_gen.jinja2
+  inputs:
+    deployment_name: gpt-4o
+    temperature: 0
+    top_p: 1
+    max_tokens: 256
+    presence_penalty: 0
+    frequency_penalty: 0
+    question: ${inputs.question}
+    context_schema: ${context_prompt.output}
+  connection: Default_AzureOpenAI
+  api: chat
+  aggregation: false
+  use_variants: false
+- name: context_prompt
+  type: llm
+  source:
+    type: code
+    path: context_prompt.jinja2
+  inputs:
+    deployment_name: gpt-4o
+    temperature: 0
+    top_p: 1
+    max_tokens: 100
+    presence_penalty: 0
+    frequency_penalty: 0
+    question: ${inputs.question}
+  connection: Default_AzureOpenAI
+  api: chat
+  aggregation: false
+  use_variants: false

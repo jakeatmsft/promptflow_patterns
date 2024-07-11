@@ -6,10 +6,10 @@ inputs:
     type: list
     is_chat_history: true
     default: []
-  question:
+  task:
     type: string
     is_chat_input: true
-    default: generate the output
+    default: "year over year revenue growth "
   fileInput:
     type: string
     default: ./ms_fy23_q1_html.htm
@@ -68,6 +68,7 @@ nodes:
     path: data_analysis_prompt.jinja2
   inputs:
     data_json: ${exec_code.output}
+    task: ${inputs.task}
 - name: run_analysis
   type: python
   source:
