@@ -105,8 +105,8 @@ def search_query_api(
     vectorFields=None):
     request_url = f"{endpoint}/indexes/{index_name}/docs/search?api-version={api_version}"
     request_payload = {
-        'top': top_k,
-        'queryLanguage': 'en-us'
+        'top': top_k
+        #'queryLanguage': 'en-us'
     }
     if query_type == 'simple':
         request_payload['search'] = query
@@ -124,8 +124,19 @@ def search_query_api(
                 embeddingModelConnection["api_version"],
                 embeddingModelName
             )
-            payload_vectors = [{"value": query_vector, "fields": vectorFields, "k": top_k } for query_vector in query_vectors]
-            request_payload['vectors'] = payload_vectors
+
+            # Assuming embedding is one of the query_vectors for demonstration
+            embedding = query_vectors[0] if query_vectors else None
+            if embedding:
+                request_payload['vectorQueries'] = [
+                    {
+                        "k": top_k,
+                        "fields": vectorFields,
+                        "kind": "vector",
+                        "exhaustive": True,
+                        "vector": embedding
+                    }
+                ]
 
         if query_type == 'vectorSimpleHybrid':
             request_payload['search'] = query

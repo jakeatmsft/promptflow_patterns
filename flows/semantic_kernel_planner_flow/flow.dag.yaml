@@ -1,0 +1,36 @@
+$schema: https://azuremlschemas.azureedge.net/promptflow/latest/Flow.schema.json
+environment:
+  python_requirements_txt: requirements.txt
+inputs:
+  chat_history:
+    type: list
+    is_chat_history: true
+    default: []
+  question:
+    type: string
+    is_chat_input: true
+    default: write email about  travellings tips based on  getting current weather
+      in Guangzhou and translate email to french
+outputs:
+  result:
+    type: string
+    reference: ${sk_planner.output}
+    is_chat_output: false
+  result_plan:
+    type: string
+    reference: ${sk_planner.output.plan}
+    is_chat_output: false
+  result_email:
+    type: string
+    reference: ${sk_planner.output.result}
+    is_chat_output: true
+nodes:
+- name: sk_planner
+  type: python
+  source:
+    type: code
+    path: sk_planner.py
+  inputs:
+    aoai_connection: Default_AzureOpenAI
+    ask: ${inputs.question}
+    deployment: gpt-4o
