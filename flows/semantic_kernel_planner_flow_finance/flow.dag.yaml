@@ -1,0 +1,29 @@
+$schema: https://azuremlschemas.azureedge.net/promptflow/latest/Flow.schema.json
+environment:
+  python_requirements_txt: requirements.txt
+inputs:
+  chat_history:
+    type: list
+    default: []
+    is_chat_input: false
+    is_chat_history: true
+  question:
+    type: string
+    default: draft email including technical analysis of MSFT for FY24 Q3
+    is_chat_input: true
+outputs:
+  result:
+    type: string
+    reference: ${sk_planner.output}
+    is_chat_output: true
+nodes:
+- name: sk_planner
+  type: python
+  source:
+    type: code
+    path: sk_planner.py
+  inputs:
+    aoai_connection: Default_AzureOpenAI
+    ask: ${inputs.question}
+    deployment: gpt-4o
+  use_variants: false

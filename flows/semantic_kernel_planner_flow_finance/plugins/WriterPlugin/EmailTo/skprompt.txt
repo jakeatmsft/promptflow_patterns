@@ -1,0 +1,1 @@
+Get email template on {{$input}} and generate the corresponding email content.

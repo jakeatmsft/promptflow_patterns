@@ -1,0 +1,24 @@
+{
+    "schema": 1,
+    "description": "tips",
+    "execution_settings": {
+        "default": {
+          "max_tokens": 1024,
+          "temperature": 0.7,
+          "presence_penalty": 0.0,
+          "frequency_penalty": 0.0
+        }
+    },
+    "input_variables": [
+        {
+          "name": "input",
+          "description": "tips",
+          "default": ""
+        },
+         {
+          "name": "language",
+          "description": "Language to translate to",
+          "default": "Spanish"
+        }
+    ]
+  }
