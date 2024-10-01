@@ -1,80 +1,17 @@
 id: template_chat_flow
-name: Template Chat Flow
+name: Template RAG Flow
 environment:
   python_requirements_txt: requirements.txt
 inputs:
   chat_history:
     type: list
-    default:
-    - inputs:
-        query: how old do I need to be to drive?
-      outputs:
-        current_query_intent: "Current Message Intent: how old do I need to be to drive?"
-        fetched_docs:
-        - id: Mi02LTIzLUxJTktTLUFEREVELTItUGFzc2VkLUFjY2Vzc2liaWxpdHktREwtNjAwLVIxLTIwMjMucGRmMTY=
-          chunk_id: null
-          content: >-
-            Title:
-            2-6-23-LINKS-ADDED-2-Passed-Accessibility-DL-600-R1-2023.pdf11SECTION  5.   An
-            Introduction to Driving
-
-            Your health may affect your driving. 
-
-            Vision  – You must be able to notice hazards in different types of lighting, 
-
-            judge distances, adjust to traffic speed, and read road signs. Hearing  – You must be able to hear horns, sirens, motorcycles, or 
-
-            screeching tires that may alert you of hazards. It is illegal to wear a 
-
-            headset or earplugs in both ears while driving.  
-
-            Fatigue and Drowsiness – Can affect your vision and increase reaction 
-
-            time to hazards. 
-
-            Physical and Mental – You must be alert to quickly decide the correct 
-
-            course of action in any type of traffic situation, including unexpected ones. 
-
-            Medications – Prescription and over-the-counter medications can make 
-
-            you an unsafe driver. Some medicines can make you sleepy. It is your responsibility to know the effects of the medications you take.
-
-            Health – Physicians are required to report patients, who are at least 14 
-
-            years old, to DMV if they believe you have medical conditions that may affect your ability to drive safely, such as lapse of consciousness. 
-
-            Controlling the Vehicle
-
-            To control your vehicle, it is critical to keep both hands on the wheel whenever possible.
-
-            Hand-to-Hand Steering
-
-            To use this steering wheel method:
-
-            1. Start with your hands at 9 and 3 o’clock or 8 and 4 o’clock. 
-
-            2. Do not cross your hands over the middle of the steering wheel.
-
-            3. Keep your hands in these positions, even when making turns.
-          filepath: 2-6-23-LINKS-ADDED-2-Passed-Accessibility-DL-600-R1-2023.pdf
-          search_score: 0.026151316240429878
-          title: null
-          url: azureml://locations/southcentralus/workspaces/a2f597f4-1a31-4e25-9c39-aa7e2d3b6df0/data/vector-index-input-1699309222872/versions/1/2-6-23-LINKS-ADDED-2-Passed-Accessibility-DL-600-R1-2023.pdf
-        reply: To drive in California, you need to be at least 16 years old to get a
-          provisional driver's license, provided you have held an instruction
-          permit from California or another state for at least 6 months (or
-          until you turn 18 years old)[doc0]. If you are under 18 years old, you
-          will also need to complete a driver education program and have a
-          parent or guardian sign to approve the application and accept
-          financial responsibility[doc0].
-        search_intents: '["how old do I need to be to drive?"]'
     is_chat_input: false
     is_chat_history: true
+    default: []
   query:
     type: string
-    default: how old do I need to be to drive?
     is_chat_input: true
+    default: ""
 outputs:
   reply:
     type: string
@@ -131,11 +68,11 @@ nodes:
     type: code
     path: RetrieveDocuments.py
   inputs:
-    searchConnection: AzureAISearch
+    searchConnection: Default_AzureSearch
     embeddingModelConnection: Default_AzureOpenAI
-    vectorFields: contentVector
+    vectorFields: '["vector_field_name"]'
     embeddingModelName: text-embedding-ada-002
-    indexName: dmv-index-full
+    indexName: '["index_name"]'
     queries: ${ExtractIntent.output.search_intents}
     queryType: vectorSimpleHybrid
     semanticConfiguration: None

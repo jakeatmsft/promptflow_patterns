@@ -1,16 +1,10 @@
 import json
 import re
 import requests
-from promptflow import tool
+from promptflow.core import tool
 from promptflow.connections import AzureOpenAIConnection
 from promptflow.connections import CognitiveSearchConnection
 
-fieldMap = {
-    "id": ["id"],
-    "url": ["url", "uri", "link", "document_link"],
-    "filepath": ["filepath", "filename"],
-    "content": ["content"]
-}
 titleRegex = re.compile(r"title: (.*)\n")
 
 def getIfString(doc, fieldName):
@@ -58,7 +52,7 @@ def getQueryList(query):
     except Exception:
         return [query]
 
-def process_search_docs_response(docs):
+def process_search_docs_response(fieldMap, docs):
     outputs = []
     for doc in docs:
         formattedDoc = {}
@@ -158,11 +152,85 @@ def search_query_api(
         raise Exception(f"failed to query search index : {retrieved_docs.json()}")
 
 @tool
-def search(queries: str, searchConnection: CognitiveSearchConnection, indexName: str, queryType: str, topK: int, semanticConfiguration: str, vectorFields: str, embeddingModelConnection: AzureOpenAIConnection, embeddingModelName: str):
+def search(queries: str, searchConnection: CognitiveSearchConnection, indexName: str, queryType: str, topK: int, semanticConfiguration: str, vectorFields: str, content_field_name:str, citation_field_name:str, embeddingModelConnection: AzureOpenAIConnection, embeddingModelName: str):
     semanticConfiguration = semanticConfiguration if semanticConfiguration != "None" else None
     vectorFields = vectorFields if vectorFields != "None" else None
     embeddingModelName = embeddingModelName if embeddingModelName != None else None
-                      
+
+    fieldMap = {
+        "id": ["id"],
+        "url": ["url", "uri", "link", "document_link"],
+        "filepath": ["filepath", "filename", citation_field_name],
+        "content": ['content', content_field_name]
+    }
+
+        
+    def search_query_api(
+        endpoint, 
+        api_key,
+        api_version, 
+        index_name, 
+        query_type, 
+        query, 
+        top_k, 
+        embeddingModelConnection,
+        embeddingModelName = None,
+        semantic_configuration_name=None,
+        vectorFields=None):
+        request_url = f"{endpoint}/indexes/{index_name}/docs/search?api-version={api_version}"
+        request_payload = {
+            'top': top_k
+            #'queryLanguage': 'en-us'
+        }
+        if query_type == 'simple':
+            request_payload['search'] = query
+            request_payload['queryType'] = query_type
+        elif query_type == 'semantic':
+            request_payload['search'] = query
+            request_payload['queryType'] = query_type
+            request_payload['semanticConfiguration'] = semantic_configuration_name
+        elif query_type in ('vector', 'vectorSimpleHybrid', 'vectorSemanticHybrid'):
+            if vectorFields and embeddingModelName:
+                query_vectors = get_query_embedding(
+                    query,
+                    embeddingModelConnection["api_base"],
+                    embeddingModelConnection["api_key"],
+                    embeddingModelConnection["api_version"],
+                    embeddingModelName
+                )
+
+                # Assuming embedding is one of the query_vectors for demonstration
+                embedding = query_vectors[0] if query_vectors else None
+                if embedding:
+                    request_payload['vectorQueries'] = [
+                        {
+                            "k": top_k,
+                            "fields": vectorFields,
+                            "kind": "vector",
+                            "exhaustive": True,
+                            "vector": embedding
+                        }
+                    ]
+
+            if query_type == 'vectorSimpleHybrid':
+                request_payload['search'] = query
+            elif query_type == 'vectorSemanticHybrid':
+                request_payload['search'] = query
+                request_payload['queryType'] = 'semantic'
+                request_payload['semanticConfiguration'] = semantic_configuration_name
+        else:
+            raise Exception(f"unsupported query type: {query_type}")
+        
+        headers = {
+            "Content-Type": "application/json",
+            "api-key": api_key
+        }
+        retrieved_docs = requests.post(request_url, json = request_payload, headers = headers, timeout=None)
+        if retrieved_docs.status_code == 200:
+            return process_search_docs_response(fieldMap, retrieved_docs.json()["value"])
+        else:
+            raise Exception(f"failed to query search index : {retrieved_docs.json()}")
+    
     # Do search.
     allOutputs = [search_query_api(
         searchConnection['api_base'], 

@@ -1,4 +1,4 @@
-from promptflow import tool
+from promptflow.core import tool
 
 @tool
 def extract_intent(input: str, query: str) -> str:

@@ -1,14 +1,14 @@
-from promptflow import tool
+from promptflow.core import tool
 
 @tool
-def format_retrieved_documents(docs: object, maxTokens: int) -> str:
+def format_retrieved_documents(docs: object, maxTokens: int, title_field_name:str = 'title', content_field_name:str = 'content' ) -> str:
   formattedDocs = []
   strResult = ""
   for index, doc in enumerate(docs):
     formattedDocs.append({
       f"[doc{index}]": {
-        "title": doc['title'],
-        "content": doc['content']
+        "title": doc[title_field_name],
+        "content": doc[content_field_name]
       }
     })
     formattedResult = { "retrieved_documents": formattedDocs }
