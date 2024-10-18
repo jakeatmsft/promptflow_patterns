@@ -20,6 +20,7 @@ function App() {
     const [selectedFile, setSelectedFile] = useState<GroundingFile | null>(null);
 
     const { startSession, addUserAudio, inputAudioBufferClear } = useRealTime({
+        enableInputAudioTranscription: true,
         onWebSocketOpen: () => console.log("WebSocket connection opened"),
         onWebSocketClose: () => console.log("WebSocket connection closed"),
         onWebSocketError: event => console.error("WebSocket error:", event),
@@ -32,14 +33,37 @@ function App() {
         },
         onReceivedExtensionMiddleTierToolResponse: message => {
             const result: ToolResult = JSON.parse(message.tool_result);
-
+    
             const files: GroundingFile[] = result.sources.map(x => {
                 const match = x.chunk_id.match(/_pages_(\d+)$/);
                 const name = match ? `${x.title}#page=${match[1]}` : x.title;
                 return { id: x.chunk_id, name: name, content: x.chunk };
             });
-
+    
             setGroundingFiles(prev => [...prev, ...files]);
+        },
+        onReceivedInputAudioTranscriptionCompleted: transcription => {
+            console.log("Transcription completed:", transcription);
+            // Handle the completed transcription here
+            if(transcription.transcript) {
+                console.log("Transcript:", transcription.transcript);
+            }
+        },
+        onReceivedResponseDone: responseDone => {
+            console.log("Response processing done:");
+            if (responseDone.response && responseDone.response.output) {
+                responseDone.response.output.forEach(output => {
+                    if (output.content) {
+                        output.content.forEach(content => {
+                            if (content.transcript) {
+                                console.log("Transcript:", content.transcript);
+                            }
+                        });
+                    }
+                });
+            } else {
+                console.log("Transcript not found in the response.");
+            }
         }
     });
 

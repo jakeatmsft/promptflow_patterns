@@ -109,27 +109,36 @@ class RTMiddleTier:
                     if "item" in message and message["item"]["type"] == "function_call":
                         item = message["item"]
                         tool_call = self._tools_pending[message["item"]["call_id"]]
-                        tool = self.tools[item["name"]]
-                        args = item["arguments"]
-                        result = await tool.target(json.loads(args))
-                        await server_ws.send_json({
-                            "type": "conversation.item.create",
-                            "item": {
-                                "type": "function_call_output",
-                                "call_id": item["call_id"],
-                                "output": result.to_text() if result.destination == ToolResultDirection.TO_SERVER else ""
-                            }
-                        })
-                        if result.destination == ToolResultDirection.TO_CLIENT:
-                            # TODO: this will break clients that don't know about this extra message, rewrite 
-                            # this to be a regular text message with a special marker of some sort
-                            await client_ws.send_json({
-                                "type": "extension.middle_tier_tool_response",
-                                "previous_item_id": tool_call.previous_id,
-                                "tool_name": item["name"],
-                                "tool_result": result.to_text()
+                        
+                        if "name" in item:
+                            tool = self.tools.get(item["name"])
+                            
+                            if tool is None:
+                                print(f"Tool '{item['name']}' not found in tools dictionary.")
+                                return None
+                            args = item["arguments"]
+                            result = await tool.target(json.loads(args))
+                            await server_ws.send_json({
+                                "type": "conversation.item.create",
+                                "item": {
+                                    "type": "function_call_output",
+                                    "call_id": item["call_id"],
+                                    "output": result.to_text() if result.destination == ToolResultDirection.TO_SERVER else ""
+                                }
                             })
-                        updated_message = None
+                            if result.destination == ToolResultDirection.TO_CLIENT:
+                                # TODO: this will break clients that don't know about this extra message, rewrite 
+                                # this to be a regular text message with a special marker of some sort
+                                await client_ws.send_json({
+                                    "type": "extension.middle_tier_tool_response",
+                                    "previous_item_id": tool_call.previous_id,
+                                    "tool_name": item["name"],
+                                    "tool_result": result.to_text()
+                                })
+                            updated_message = None
+                        else:
+                            print("Item does not contain 'name' key.")
+                            return None
 
                 case "response.done":
                     if len(self._tools_pending) > 0:
@@ -142,7 +151,11 @@ class RTMiddleTier:
                         replace = False
                         for i, output in enumerate(reversed(message["response"]["output"])):
                             if output["type"] == "function_call":
-                                message["response"]["output"].pop(i)
+                                # Ensure 'i' is within the valid range before popping
+                                if 0 <= i < len(message["response"]["output"]):
+                                    message["response"]["output"].pop(i)
+                                else:
+                                    print(f"Index {i} is out of range for popping from the list.")
                                 replace = True
                         if replace:
                             updated_message = json.dumps(message)                        
@@ -195,6 +208,7 @@ class RTMiddleTier:
                         if msg.type == aiohttp.WSMsgType.TEXT:
                             new_msg = await self._process_message_to_client(msg, ws, target_ws)
                             if new_msg is not None:
+                                print(new_msg)
                                 await ws.send_str(new_msg)
                         else:
                             print("Error: unexpected message type:", msg.type)

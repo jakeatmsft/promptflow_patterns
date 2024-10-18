@@ -24,6 +24,8 @@ if __name__ == "__main__":
 
     rtmt = RTMiddleTier(llm_endpoint, llm_deployment, AzureKeyCredential(llm_key) if llm_key else credentials)
     rtmt.system_message = "You are a helpful assistant. Only answer questions based on information you have retrieved from the analyst tool. " + \
+                          "The analyst tool can retrieve web information and provide analysis that you can use to answer questions. " + \
+                          "For any question please use the analyst tool to look up the information. " + \
                           "The user is listening to answers with audio, so it's *super* important that answers are as short as possible, a single sentence if at all possible. " + \
                           "Never read file names or source names or keys out loud. " + \
                           "Before using analyst tool, please ask the user to wait with the following phrase 'please wait while I look that up' while you look up the information. " + \

@@ -70,8 +70,8 @@ async def my_python_tool(aoai_conn:AzureOpenAIConnection, deployment_name:str, b
     kernel.add_plugin(MathPlugin(), plugin_name="Math")
     kernel.add_plugin(FinancePlugin(), plugin_name="Finance")
     
-    #Autogen Agent for advanced functionality
-    kernel.add_plugin(AutogenFinancePlugin(deployment_name, aoai_conn.api_key, aoai_conn.api_base), plugin_name="AutogenFinance")
+    #Autogen Agent for advanced functionality, UNCOMMENT TO ENABLE AUTOGEN
+    #kernel.add_plugin(AutogenFinancePlugin(deployment_name, aoai_conn.api_key, aoai_conn.api_base), plugin_name="AutogenFinance")
     
     # Create the agent
     agent = ChatCompletionAgent(
