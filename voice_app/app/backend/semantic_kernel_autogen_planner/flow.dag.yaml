@@ -1,0 +1,28 @@
+$schema: https://azuremlschemas.azureedge.net/promptflow/latest/Flow.schema.json
+environment:
+  python_requirements_txt: requirements.txt
+inputs:
+  chat_history:
+    type: list
+    is_chat_history: true
+    default: []
+  question:
+    type: string
+    is_chat_input: true
+    default: What are 6 month consensus estimates for Microsoft stock price?
+outputs:
+  answer:
+    type: string
+    reference: ${finance_autogen_step.output}
+    is_chat_output: true
+nodes:
+- name: finance_autogen_step
+  type: python
+  source:
+    type: code
+    path: autogen_step.py
+  inputs:
+    aoai_conn: Default_AzureOpenAI
+    bing_connection: bing_connection
+    deployment_name: gpt-4o
+    question: ${inputs.question}
