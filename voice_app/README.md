@@ -80,14 +80,14 @@ You can run the project in your local VS Code Dev Container using the [Dev Conta
    Windows:
 
    ```pwsh
-   cd app
+   cd voice_app/app
    pwsh .\start.ps1
    ```
 
    Linux/Mac:
 
    ```bash
-   cd app
+   cd voice_app/app
    ./start.sh
    ```
 
