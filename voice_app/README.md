@@ -23,12 +23,12 @@ From the path /voice_app/app_backend/semantic_kernel_autogen_planner, update the
 
 ```bash
 # Create azure open ai connection
-# pf connection create --file default_azureopenai.yaml --set api_key=<your_api_key> api_base=<your_api_base> --name open_ai_connection
+# pf connection create --file default_azureopenai.yaml --set api_key=<your_api_key> api_base=<your_api_base> --name default_azureopenai
 ```
 
 ```bash
 # Create azure open ai connection
-# pf connection create --file bing_connection.yaml --set api_key=<your_api_key> api_base=<your_api_base> --name open_ai_connection
+# pf connection create --file bing_connection.yaml --set api_key=<your_api_key> api_base=<your_api_base> --name bing_connection
 ```
 
 ### 3. Setting up the app environment
@@ -66,9 +66,9 @@ You can run the project in your local VS Code Dev Container using the [Dev Conta
       - **Important**: Ensure you can run `python --version` from console. On Ubuntu, you might need to run `sudo apt install python-is-python3` to link `python` to `python3`.
    - [Powershell](https://learn.microsoft.com/powershell/scripting/install/installing-powershell)
 
-2. Clone the repo (`git clone https://github.com/Azure-Samples/aisearch-openai-rag-audio`)
+2. Clone the repo (`git clone https://github.com/jakeatmsft/promptflow_patterns`), the app is in the /voice_app/ folder
 3. Create a Python virtual environment and activate it.
-4. The app needs to know which service endpoints to use for the Azure OpenAI and Azure AI Search. The following variables can be set as environment variables, or you can create a ".env" file in the "app/backend/" directory with this content.
+4. The app needs to know which service endpoints to use for the Azure OpenAI and Azure AI Search. The following variables can be set as environment variables, or you can create a ".env" file in the "/voice_app/backend/" directory with this content.
    ```
    AZURE_OPENAI_ENDPOINT=wss://<your instance name>.openai.azure.com
    AZURE_OPENAI_DEPLOYMENT=gpt-4o-realtime-preview
