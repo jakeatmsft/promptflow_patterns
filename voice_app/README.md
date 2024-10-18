@@ -1,11 +1,8 @@
-# VoiceRAG: An Application Pattern for RAG + Voice Using Azure AI Search and the GPT-4o Realtime API for Audio
+# VoiceFlow: An Application Pattern for RAG + Promptflow using the GPT-4o Realtime API for Audio
 
-[![Open in GitHub Codespaces](https://img.shields.io/static/v1?style=for-the-badge&label=GitHub+Codespaces&message=Open&color=brightgreen&logo=github)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&skip_quickstart=true&machine=basicLinux32gb&repo=860141324&devcontainer_path=.devcontainer%2Fdevcontainer.json&geo=WestUs2)
-[![Open in Dev Containers](https://img.shields.io/static/v1?style=for-the-badge&label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/Azure-Samples/aisearch-openai-rag-audio)
+[Video Demonstration](https://youtu.be/oGP_WgxqYJM)
 
-This repo contains an example of how to implement RAG support in applications that use voice as their user interface, powered by the GPT-4o realtime API for audio. We describe the pattern in more detail in [this blog post](https://aka.ms/voicerag), and you can see this sample app in action in [this short video](https://youtu.be/vXJka8xZ9Ko).
-
-![RTMTPattern](docs/RTMTPattern.png)
+This repo contains a fork of the [VoiceRAG](https://aka.ms/voicerag) example of how to implement RAG support in applications that use voice as their user interface, powered by the GPT-4o realtime API for audio.  This example leverages [Semantic Kernel](https://aka.ms/semantickernel) [Promptflow](https://aka.ms/promptflow) to perform Agentic tool execution such as Web retrieval and simple Analysis steps when interacting with the gpt-4o-realtime voice model. 
 
 ## Running this sample
 We'll follow 4 steps to get this example running in your own environment: pre-requisites, creating an index, setting up the environment, and running the app.
@@ -13,26 +10,28 @@ We'll follow 4 steps to get this example running in your own environment: pre-re
 ### 1. Pre-requisites
 You'll need instances of the following Azure services. You can re-use service instances you have already or create new ones.
 1. [Azure OpenAI](https://ms.portal.azure.com/#create/Microsoft.CognitiveServicesOpenAI), with 2 model deployments, one of the **gpt-4o-realtime-preview** model, and one for embeddings (e.g.text-embedding-3-large, text-embedding-3-small, or text-embedding-ada-002)
-2. [Azure Blob Storage](https://ms.portal.azure.com/#create/Microsoft.StorageAccount-ARM), with a container that has the content that represents your knowledge base (we include some sample data in this repo if you want an easy starting point)
-3. [Promptflow](https://aka.ms/promptflow) (optional), to help you create prompts for the GPT-4o model
+3. [Promptflow](https://aka.ms/promptflow) to help you create prompts for the GPT-4o model
 
 ### 2. Connecting Promptflow
 
 ## Create connection for LLM tool to use
 You can follow these steps to create a connection required by a LLM tool.
 
-Currently, there are two connection types supported by LLM tool: "AzureOpenAI" and "OpenAI". If you want to use "AzureOpenAI" connection type, you need to create an Azure OpenAI service first. Please refer to [Azure OpenAI Service](https://azure.microsoft.com/en-us/products/cognitive-services/openai-service/) for more details. If you want to use "OpenAI" connection type, you need to create an OpenAI account first. Please refer to [OpenAI](https://platform.openai.com/) for more details.
+Currently, there are connection types required by the promptflow tool: "AzureOpenAI" and "BingConnection". 
+
+From the path /voice_app/app_backend/semantic_kernel_autogen_planner, update the values in each yaml file and create the Promptflow connection strings
 
 ```bash
-# Override keys with --set to avoid yaml file changes
-# Create open ai connection
-pf connection create --file openai.yaml --set api_key=<your_api_key> --name open_ai_connection
-
 # Create azure open ai connection
-# pf connection create --file azure_openai.yaml --set api_key=<your_api_key> api_base=<your_api_base> --name open_ai_connection
+# pf connection create --file default_azureopenai.yaml --set api_key=<your_api_key> api_base=<your_api_base> --name open_ai_connection
 ```
 
-### 3. Setting up the environment
+```bash
+# Create azure open ai connection
+# pf connection create --file bing_connection.yaml --set api_key=<your_api_key> api_base=<your_api_base> --name open_ai_connection
+```
+
+### 3. Setting up the app environment
 The app needs to know which service endpoints to use for the Azure OpenAI and Azure AI Search. The following variables can be set as environment variables, or you can create a ".env" file in the "app/backend/" directory with this content.
    ```
    AZURE_OPENAI_ENDPOINT=wss://<your instance name>.openai.azure.com
@@ -43,14 +42,14 @@ The app needs to know which service endpoints to use for the Azure OpenAI and Az
 
 ### 4. Running the app
 
-#### GitHub Codespaces
+#### GitHub Codespaces (experimental YMMV)
 You can run this repo virtually by using GitHub Codespaces, which will open a web-based VS Code in your browser:
 
 [![Open in GitHub Codespaces](https://img.shields.io/static/v1?style=for-the-badge&label=GitHub+Codespaces&message=Open&color=brightgreen&logo=github)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&skip_quickstart=true&machine=basicLinux32gb&repo=860141324&devcontainer_path=.devcontainer%2Fdevcontainer.json&geo=WestUs2)
 
 Once the codespace opens (this may take several minutes), open a new terminal.
 
-#### VS Code Dev Containers
+#### VS Code Dev Containers (experimental YMMV)
 You can run the project in your local VS Code Dev Container using the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers):
 
 1. Start Docker Desktop (install it if not already installed)
