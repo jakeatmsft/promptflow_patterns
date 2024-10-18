@@ -9,7 +9,7 @@ We'll follow 4 steps to get this example running in your own environment: pre-re
 
 ### 1. Pre-requisites
 You'll need instances of the following Azure services. You can re-use service instances you have already or create new ones.
-1. [Azure OpenAI](https://ms.portal.azure.com/#create/Microsoft.CognitiveServicesOpenAI), with 2 model deployments, one of the **gpt-4o-realtime-preview** model, and one for embeddings (e.g.text-embedding-3-large, text-embedding-3-small, or text-embedding-ada-002)
+1. [Azure OpenAI](https://ms.portal.azure.com/#create/Microsoft.CognitiveServicesOpenAI), with 2 model deployments, one of the **gpt-4o-realtime-preview** model
 3. [Promptflow](https://aka.ms/promptflow) to help you create prompts for the GPT-4o model
 
 ### 2. Connecting Promptflow
