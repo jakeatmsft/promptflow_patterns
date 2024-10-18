@@ -2,7 +2,7 @@
 
 [Video Demonstration](https://youtu.be/oGP_WgxqYJM)
 
-This repo contains a fork of the [VoiceRAG](https://aka.ms/voicerag) example of how to implement RAG support in applications that use voice as their user interface, powered by the GPT-4o realtime API for audio.  This example leverages [Semantic Kernel](https://aka.ms/semantickernel) [Promptflow](https://aka.ms/promptflow) to perform Agentic tool execution such as Web retrieval and simple Analysis steps when interacting with the gpt-4o-realtime voice model. 
+This repo contains a fork of the [VoiceRAG](https://aka.ms/voicerag) example of how to implement RAG support in applications that use voice as their user interface, powered by the GPT-4o realtime API for audio.  This example leverages [Semantic Kernel](https://aka.ms/semantickernel) + [Promptflow](https://aka.ms/promptflow) to perform Agentic tool execution such as Web retrieval and simple Analysis steps when interacting with the gpt-4o-realtime voice model. 
 
 ## Running this sample
 We'll follow 4 steps to get this example running in your own environment: pre-requisites, creating an index, setting up the environment, and running the app.
@@ -23,12 +23,12 @@ From the path /voice_app/app_backend/semantic_kernel_autogen_planner, update the
 
 ```bash
 # Create azure open ai connection
-# pf connection create --file default_azureopenai.yaml --set api_key=<your_api_key> api_base=<your_api_base> --name default_azureopenai
+# pf connection create --file default_azureopenai.yaml --set api_base=<your_api_base> 
 ```
 
 ```bash
 # Create azure open ai connection
-# pf connection create --file bing_connection.yaml --set api_key=<your_api_key> api_base=<your_api_base> --name bing_connection
+# pf connection create --file bing_connection.yaml
 ```
 
 ### 3. Setting up the app environment
