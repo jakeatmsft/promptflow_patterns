@@ -1,0 +1,40 @@
+$schema: https://azuremlschemas.azureedge.net/promptflow/latest/Flow.schema.json
+environment:
+  python_requirements_txt: requirements.txt
+inputs:
+  chat_history:
+    type: list
+    is_chat_history: true
+    default: []
+  question:
+    type: string
+    is_chat_input: true
+    default: provide a transcript of this message
+  audio_input_file:
+    type: string
+    default: C:\repo\promptflow_patterns\flows\realtime_audio_flow\input\arc-easy-q237-tts.wav
+outputs:
+  answer:
+    type: string
+    reference: ${realtime_chat.output}
+    is_chat_output: true
+  file_input:
+    type: string
+    reference: ${inputs.audio_input_file}
+nodes:
+- name: realtime_chat
+  type: python
+  source:
+    type: code
+    path: realtime_chat.py
+  inputs:
+    system_msg: ${system_instruction.output}
+    aoai_connection: Default_AzureOpenAI
+    deployment: gpt-4o-realtime-preview
+    audio_input_path: ${inputs.audio_input_file}
+- name: system_instruction
+  type: prompt
+  source:
+    type: code
+    path: system_instruction.jinja2
+  inputs: {}

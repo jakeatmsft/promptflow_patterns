@@ -4,26 +4,25 @@ environment:
 inputs:
   chat_history:
     type: list
-    default: []
-    is_chat_input: false
     is_chat_history: true
+    default: []
   question:
     type: string
-    default: draft email including technical analysis of MSFT for FY24 Q3
     is_chat_input: true
+    default: What are 6 month consensus estimates for Microsoft stock price?
 outputs:
-  result:
+  answer:
     type: string
-    reference: ${sk_planner.output}
+    reference: ${finance_autogen_step.output}
     is_chat_output: true
 nodes:
-- name: sk_planner
+- name: finance_autogen_step
   type: python
   source:
     type: code
-    path: sk_planner.py
+    path: autogen_step.py
   inputs:
-    aoai_connection: Default_AzureOpenAI
-    ask: ${inputs.question}
-    deployment: gpt-4o
-  use_variants: false
+    aoai_conn: Default_AzureOpenAI
+    bing_connection: bing_connection
+    deployment_name: gpt-4o
+    question: ${inputs.question}

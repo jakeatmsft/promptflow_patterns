@@ -1,0 +1,11 @@
+promptflow==1.14.0
+semantic-kernel==1.5.0
+pyautogen==0.2.34
+python-dotenv==1.0.0
+beautifulsoup4==4.12
+imap-tools==1.5.0 
+google-api-python-client==2.108.0 
+google-auth-httplib2==0.1.1 
+google-auth-oauthlib==1.1.0
+pydantic==2.8.2
+openai==1.44.1

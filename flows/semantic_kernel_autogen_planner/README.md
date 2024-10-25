@@ -1,5 +1,6 @@
-# Chat flow
-Chat flow is designed for conversational application development, building upon the capabilities of standard flow and providing enhanced support for chat inputs/outputs and chat history management. With chat flow, you can easily create a chatbot that handles chat input and output.
+# Assistant Chat flow for Finance Domain
+This template also includes auto agent tools specifically designed for finance-related tasks. These tools can help automate various financial operations, such as market analysis, financial forecasting, and data retrieval. By integrating these tools into your chat flow, you can create a powerful assistant capable of handling complex financial queries and tasks.
+
 
 ## Create connection for LLM tool to use
 You can follow these steps to create a connection required by a LLM tool.
