@@ -21,6 +21,18 @@ Outputs
   
 ![alt text](<assets/Screenshot 2024-10-29 091525.png>)
 
+Example Input: 
+<audio controls src="assets/example_in.wav" title=""></audio>
+
+Example Output:
+
+- Audio transcript: 
+`
+I hear a person speaking English with an American accent in a clear tone. They said the following: "A fault observed in layers of sedimentary rock most likely resulted from the converging of crustal plates."
+`
+
+- Audio output:
+  - <audio controls src="assets/example_out.wav" title="Title"></audio>
 
 ### Batch Execution
 Use the `input/realtime_batchrun.jsonl` file to run the flow in batch mode.
