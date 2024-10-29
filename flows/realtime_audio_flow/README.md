@@ -23,7 +23,7 @@ Outputs
 
 Example Input: 
 <audio controls src="assets/example_in.wav" title=""></audio>
-[input](assets\example_in.wav)
+[input](assets/example_in.wav)
 
 Example Output:
 
