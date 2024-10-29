@@ -12,7 +12,7 @@ inputs:
     default: provide a transcript of this message
   audio_input_file:
     type: string
-    default: C:\repo\promptflow_patterns\flows\realtime_audio_flow\input\arc-easy-q237-tts.wav
+    default: C:\repo\promptflow_patterns\flows\realtime_audio_flow\input\qs-0001.wav
 outputs:
   answer:
     type: string
