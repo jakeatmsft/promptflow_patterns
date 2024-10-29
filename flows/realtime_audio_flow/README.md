@@ -23,7 +23,8 @@ Outputs
 
 Example Input: 
 <audio controls src="assets/example_in.wav" title=""></audio>
-[input](assets/example_in.wav)
+[input](https://gabalpha.github.io/read-audio/?p=https://github.com/jakeatmsft/promptflow_patterns/raw/refs/heads/main/flows/realtime_audio_flow/assets/example_in.wav)
+
 
 Example Output:
 
@@ -34,7 +35,7 @@ I hear a person speaking English with an American accent in a clear tone. They s
 
 - Audio output:
 - <audio controls src="assets/example_out.wav" title="Title"></audio>
-  [output](assets/example_out.wav)
+[output](https://gabalpha.github.io/read-audio/?p=https://github.com/jakeatmsft/promptflow_patterns/raw/refs/heads/main/flows/realtime_audio_flow/assets/example_out.wav)
 
 ### Batch Execution
 Use the `input/realtime_batchrun.jsonl` file to run the flow in batch mode.
