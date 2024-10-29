@@ -7,6 +7,8 @@ import numpy as np
 import soundfile as sf
 from azure.core.credentials import AzureKeyCredential
 from scipy.signal import resample
+from azure.core.exceptions import ServiceRequestError
+    
 
 from rtclient import (
     InputAudioTranscription,
@@ -140,8 +142,24 @@ async def my_python_tool(audio_input_path: str, system_msg: str, aoai_connection
     deployment = deployment
     out_dir = "./output"
     audio_file_path = audio_input_path
-    
-    async with RTClient(url=endpoint, key_credential=AzureKeyCredential(key), azure_deployment=deployment) as client:
+
+    async def connect_with_retry(url, key_credential, azure_deployment, retries=5, initial_delay=2):
+        delay = initial_delay
+        for attempt in range(retries):
+            try:
+                client = RTClient(url=url, key_credential=key_credential, azure_deployment=azure_deployment)
+                await client.__aenter__()
+                return client
+            except Exception as e:
+                if attempt < retries - 1:
+                    await asyncio.sleep(delay)
+                    delay *= 2  # Exponential backoff
+                else:
+                    raise e
+
+
+    client = await connect_with_retry(url=endpoint, key_credential=AzureKeyCredential(key), azure_deployment=deployment)
+    try:
         print("Configuring Session...", end="", flush=True)
         await client.configure(
             instructions=system_msg,
@@ -150,19 +168,17 @@ async def my_python_tool(audio_input_path: str, system_msg: str, aoai_connection
         )
         print("Done")
         
-        #await asyncio.gather(send_audio(client, audio_file_path), receive_messages(client, out_dir))
-
         print("Sending Audio")
         send_audio_task = send_audio(client, audio_file_path)
         receive_messages_task = receive_messages(client, out_dir)
 
         # Await both tasks and capture the result of receive_messages
         _, received_messages_output = await asyncio.gather(send_audio_task, receive_messages_task)
-            # Return an object with the output from receive_messages
+        # Return an object with the output from receive_messages
         print("Received Messages")
         return {
-            "audio_transcript":str_buffer,
+            "audio_transcript": str_buffer,
             "file_outputs": file_list
         }
-
-        
+    finally:
+        await client.__aexit__(None, None, None)
