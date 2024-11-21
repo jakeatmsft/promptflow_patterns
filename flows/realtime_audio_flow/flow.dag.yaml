@@ -12,7 +12,7 @@ inputs:
     default: provide a transcript of this message
   audio_input_file:
     type: string
-    default: .\input\qs-0001.wav
+    default: .\input\Voicyangry_man.mp3
 outputs:
   answer:
     type: string
