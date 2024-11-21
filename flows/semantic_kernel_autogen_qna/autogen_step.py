@@ -37,7 +37,7 @@ class ApprovalTerminationStrategy(TerminationStrategy):
     async def should_agent_terminate(self, agent, history):
         """Check if the agent should terminate."""
         if isinstance(history, list) and history:
-            return "approved" in history[-1].content.lower()
+            return any(keyword in history[-1].content.lower() for keyword in ["approve", "approved"])        
         return False
         
 @tool
@@ -116,14 +116,14 @@ async def my_python_tool(aoai_conn:AzureOpenAIConnection, deployment_name:str, b
 
     QuestionAnswererAgent = ChatCompletionAgent(service_id=service_id, kernel=kernel, name='QuestionAnswererAgent', instructions=QuestionAnswererPrompt, execution_settings=settings )
     AnswerCheckerAgent = ChatCompletionAgent(service_id=service_id, kernel=kernel, name='AnswerCheckerAgent', instructions=AnswerCheckerPrompt, execution_settings=settings )
-    LinkCheckerAgent = ChatCompletionAgent(service_id=service_id, kernel=kernel, name='LinkCheckerAgent', instructions=LinkCheckerPrompt )
+    LinkCheckerAgent = ChatCompletionAgent(service_id=service_id, kernel=kernel, name='LinkCheckerAgent', instructions=LinkCheckerPrompt, execution_settings=settings )
     ManagerAgent = ChatCompletionAgent(service_id=service_id, kernel=kernel, name='ManagerAgent', instructions=ManagerPrompt)
     
 
     # Create the agent
-    agent = ChatCompletionAgent(
-        service_id=service_id, kernel=kernel, name="Assistant", instructions="Solve user question using plugins", execution_settings=settings
-    )
+    # agent = ChatCompletionAgent(
+    #     service_id=service_id, kernel=kernel, name="Assistant", instructions="Solve user question using plugins", execution_settings=settings
+    # )
     
     
     # Create the group chat
@@ -137,7 +137,7 @@ async def my_python_tool(aoai_conn:AzureOpenAIConnection, deployment_name:str, b
     
     today_date = datetime.now().strftime('%Y-%m-%d')
 
-    await chat.add_chat_message(ChatMessageContent(role=AuthorRole.USER, content=question))
+    await chat.add_chat_message(ChatMessageContent(role=AuthorRole.USER, content=f'In the {Context}, {question}'))    
     print(f"# {AuthorRole.USER}: '{question}'")
     
     try:

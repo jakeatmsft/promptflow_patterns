@@ -13,7 +13,7 @@ inputs:
   question:
     type: string
     is_chat_input: true
-    default: why doesn't prompt caching work in my test of the o1-mini model ?
+    default: how do I get more PTU?
 outputs:
   answer:
     type: string
