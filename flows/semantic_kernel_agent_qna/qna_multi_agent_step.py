@@ -1,28 +1,26 @@
+from datetime import datetime
 
 from promptflow.core import tool
 from promptflow.core._connection import AzureOpenAIConnection, CustomConnection
-from datetime import datetime
-from semantic_kernel.kernel import Kernel
-from semantic_kernel.connectors.ai.open_ai.services.azure_chat_completion import AzureChatCompletion
-
-# Load Plugins
-#from semantic_kernel.core_plugins.web_search_engine_plugin import WebSearchEnginePlugin
-from semantic_kernel.core_plugins.math_plugin import MathPlugin
-from semantic_kernel.connectors.search_engine.bing_connector import BingConnector
-#from semantic_kernel.core_plugins.http_plugin import HttpPlugin
-from plugins.bing_plugin import WebSearchEngineBingPlugin
-from plugins.http_plugin import HttpBrowsePlugin
 
 from semantic_kernel.agents import AgentGroupChat, ChatCompletionAgent
-from semantic_kernel.contents.chat_message_content import ChatMessageContent
-from semantic_kernel.agents.strategies.termination.termination_strategy import TerminationStrategy
 from semantic_kernel.connectors.ai.function_choice_behavior import FunctionChoiceBehavior
 from semantic_kernel.connectors.ai.open_ai import AzureChatCompletion
+from semantic_kernel.connectors.ai.open_ai.services.azure_chat_completion import AzureChatCompletion
+from semantic_kernel.connectors.search_engine.bing_connector import BingConnector
 from semantic_kernel.contents.chat_history import ChatHistory
+from semantic_kernel.contents.chat_message_content import ChatMessageContent
 from semantic_kernel.contents.utils.author_role import AuthorRole
-
-#from planning.autogen_planner import AutoGenPlanner
+from semantic_kernel.core_plugins.math_plugin import MathPlugin
+from semantic_kernel.exceptions import FunctionExecutionException
+from semantic_kernel.functions.kernel_function_decorator import kernel_function
+from semantic_kernel.kernel import Kernel
 from semantic_kernel.planners.sequential_planner import SequentialPlanner
+from semantic_kernel.agents.strategies.termination.termination_strategy import TerminationStrategy
+
+# Using custom plugins
+from plugins.bing_plugin import WebSearchEngineBingPlugin
+from plugins.http_plugin import HttpBrowsePlugin
 
 # The inputs section will change based on the arguments of the tool function, after you save the code
 # Adding type to arguments and return value will help the system show the types properly
@@ -59,6 +57,7 @@ async def my_python_tool(aoai_conn:AzureOpenAIConnection, deployment_name:str, b
     kernel.add_plugin(WebSearchEngineBingPlugin(connector), plugin_name="WebSearch")
     # Function plugins
     kernel.add_plugin(HttpBrowsePlugin(), plugin_name="WebPages")
+    kernel.add_plugin(MathPlugin(), plugin_name="Math")
     
 
     settings = kernel.get_prompt_execution_settings_from_service_id(service_id=service_id)
