@@ -1,0 +1,33 @@
+$schema: https://azuremlschemas.azureedge.net/promptflow/latest/Flow.schema.json
+environment:
+  python_requirements_txt: requirements.txt
+inputs:
+  chat_history:
+    type: list
+    is_chat_history: true
+    default: []
+  subject_context:
+    type: string
+    is_chat_input: true
+    default: Azure OpenAI
+  question:
+    type: string
+    is_chat_input: true
+    default: what are the steps to onboard provisioned throughput for Azure OpenAI?
+outputs:
+  output:
+    type: string
+    reference: ${qna_multi_agent_step.output.}
+    is_chat_output: true
+nodes:
+- name: qna_multi_agent_step
+  type: python
+  source:
+    type: code
+    path: qna_multi_agent_step.py
+  inputs:
+    aoai_conn: Default_AzureOpenAI
+    bing_connection: bing_connection
+    deployment_name: gpt-4o-2
+    question: ${inputs.question}
+    subject_context: ${inputs.subject_context}
