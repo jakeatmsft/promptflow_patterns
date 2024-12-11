@@ -13,7 +13,7 @@ inputs:
   question:
     type: string
     is_chat_input: true
-    default: what are the steps to onboard provisioned throughput for Azure OpenAI?
+    default: What types of safety filters are available in Azure OpenAI?
 outputs:
   output:
     type: string
